@@ -45,14 +45,21 @@ void SolarSystem::update(sf::Time dt)
 		if (Planet* ps = dynamic_cast<Planet*>(&(*body)))
 			ps->update(dt);
 }
+#include <iostream>
 	// Draw
 void SolarSystem::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	sf::FloatRect screenRect(sf::Vector2f(mWindow.getView().getCenter().x - mWindow.getView().getSize().x / 2,
 										  mWindow.getView().getCenter().y - mWindow.getView().getSize().y / 2),
 										  mWindow.getView().getSize());
+
+	int drawables = 0;
 	for (const auto& body : mCelestialBodies) {
 		body->checkScreenRectIntersection(screenRect);
 		body->draw(target, states);
+		if (Planet* ps = dynamic_cast<Planet*>(&(*body)))
+			if (ps->mOrbitVisible)
+				drawables++;
 	}
+	std::cout << "Drew " << drawables << std::endl;
 }

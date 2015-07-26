@@ -13,7 +13,8 @@ private:
 
 private:
 	// Private Methods
-	void setZoomAt(bool direction);
+	void handleViewMovement();
+	void handleZoom(int mouseWheelDelta);
 	void processEvents();
 	void update(sf::Time dt);
 	void render();

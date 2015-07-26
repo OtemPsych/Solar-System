@@ -8,20 +8,25 @@
 
 class Planet :public CelestialBody
 {
+	friend class SolarSystem;
 private:
 	// Private Data Members
 	CelestialBody&					mOrbitalTarget;
 	sf::CircleShape					mOrbit;
 	bool							mOrbitVisible;
 	float							mRotationSpeed;
-	std::vector<sf::RectangleShape> mLines;
+	std::vector<std::pair
+		<sf::RectangleShape, bool>> mLines;
 	CelestialBody&					mLinesTarget;
 	bool						    mAddLines;
 
 private:
 	// Private Methods
 	sf::CircleShape createOrbit();
+	void checkOrbitIntersection(sf::FloatRect screenRect);
+	void checkLinesIntersection(sf::FloatRect screenRect);
 	void addLine();
+	void removeLines();
 public:
 	// Constructor
 	Planet(CelestialBody celestialBody, CelestialBody& orbitalTarget,

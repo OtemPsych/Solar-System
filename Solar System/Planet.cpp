@@ -16,7 +16,7 @@ Planet::Planet(CelestialBody celestialBody, CelestialBody& orbitalTarget,
 	, mLines()
 	, mLinesTarget(linesTarget)
 	, mAddLines(addLines)
-{
+{	
 }
 
 // Private Method
@@ -35,6 +35,34 @@ sf::CircleShape Planet::createOrbit()
 
 	return orbit;
 }
+	// Check Orbit Intersection
+void Planet::checkOrbitIntersection(sf::FloatRect screenRect)
+{
+	sf::Vector2f orbitalTargetCenter(mOrbitalTarget.mShape.getPosition().x + mOrbitalTarget.mShape.getRadius(),
+								     mOrbitalTarget.mShape.getPosition().y + mOrbitalTarget.mShape.getRadius());
+
+	sf::Vector2f distanceFromOrbit(orbitalTargetCenter.x - (mShape.getPosition().x + mShape.getRadius()),
+								   orbitalTargetCenter.y - (mShape.getPosition().x + mShape.getRadius()));
+	sf::Vector2f distanceFromScreen(orbitalTargetCenter.x - screenRect.left,
+									orbitalTargetCenter.y - screenRect.top);
+
+	float orbitDistance = sqrt(pow(distanceFromOrbit.x, 2) + pow(distanceFromOrbit.y, 2));
+	float screenDistance = sqrt(pow(distanceFromScreen.x, 2) + pow(distanceFromScreen.y, 2));
+
+	if (orbitDistance < screenDistance)
+		mOrbitVisible = true;
+	else
+		mOrbitVisible = false;
+}
+	// Check Lines Intersection
+void Planet::checkLinesIntersection(sf::FloatRect screenRect)
+{
+	for (auto& line : mLines)
+		if (screenRect.intersects(line.first.getGlobalBounds()))
+			line.second = true;
+		else
+			line.second = false;
+}
 	// Add Line
 void Planet::addLine()
 {
@@ -48,28 +76,27 @@ void Planet::addLine()
 	sf::RectangleShape line(sf::Vector2f(1.f, distance));
 	line.setPosition(mShape.getPosition().x + mShape.getRadius(), mShape.getPosition().y + mShape.getRadius());
 	line.setFillColor(sf::Color::White);
-	line.setRotation(angle);
+	line.setRotation((float)angle);
 
-	mLines.push_back(line);
+	mLines.push_back(std::make_pair(line, true));
+
+	if (mLines.size() > 1500)
+		mAddLines = false;
+}
+	// Remove Lines
+void Planet::removeLines()
+{
+	if (mLines.size() == 1)
+		mAddLines = true;
+	mLines.erase(mLines.begin());
 }
 
 // Public Methods
 	// Check Screen Rect Intersection
 void Planet::checkScreenRectIntersection(sf::FloatRect screenRect)
 {
-	auto distanceFromOrbit(sf::Vector2f(std::abs(mOrbit.getPosition().x - mOrbitalTarget.mShape.getPosition().x - mOrbitalTarget.mShape.getRadius()),
-										std::abs(mOrbit.getPosition().y - mOrbitalTarget.mShape.getPosition().y - mOrbitalTarget.mShape.getRadius())));
-	auto distanceFromScreen(sf::Vector2f(std::abs(mOrbitalTarget.mShape.getPosition().x - mOrbitalTarget.mShape.getRadius() - screenRect.width),
-										 std::abs(mOrbitalTarget.mShape.getPosition().y - mOrbitalTarget.mShape.getRadius() - screenRect.height)));
-	auto orbitDistance = sqrt(pow(distanceFromOrbit.x, 2) + pow(distanceFromOrbit.y, 2));
-	auto screenDistance = sqrt(pow(distanceFromScreen.x, 2) + pow(distanceFromScreen.y, 2));
-
-	if (orbitDistance < screenDistance)
-		mOrbitVisible = true;
-	else {
-		mOrbitVisible = false;
-		//std::cout << "Not Visible\n";
-	}
+	checkOrbitIntersection(screenRect);
+	checkLinesIntersection(screenRect);
 
 	CelestialBody::checkScreenRectIntersection(screenRect);
 }
@@ -83,12 +110,15 @@ void Planet::update(sf::Time dt)
 
 	if (mAddLines)
 		addLine();
+	else if (!mLines.empty())
+		removeLines();
 }
 	// Draw
 void Planet::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	for (const auto& line : mLines)
-		target.draw(line, states);
+		if (line.second)
+			target.draw(line.first, states);
 
 	if (mOrbitVisible)
 		target.draw(mOrbit, states);
