@@ -2,8 +2,9 @@
 #define ProgramLoop_H_
 
 #include "SolarSystem.h"
+#include <SFML/Audio/Music.hpp>
 
-class ProgramLoop
+class ProgramLoop :private sf::NonCopyable
 {
 private:
 	// Private Data Members

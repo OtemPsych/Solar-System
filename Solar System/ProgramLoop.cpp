@@ -10,13 +10,14 @@ ProgramLoop::ProgramLoop()
 	, mWindowBounds(0.f, 0.f, (float)mWindow.getSize().x, (float)mWindow.getSize().y)
 	, mSolarSystem(mWindow)
 {
-	auto mStyleFlag = sf::Style::Default;
+	auto mStyleFlag = sf::Style::Default | sf::Style::Fullscreen;
 	std::vector<sf::VideoMode> VModes = sf::VideoMode::getFullscreenModes();
 
 	mWindow.create(VModes.front(), "Solar System", mStyleFlag, sf::ContextSettings(0, 0, 16));
 }
 
 // Private Methods
+#include <iostream>
 	// Handle View Movement
 void ProgramLoop::handleViewMovement()
 {

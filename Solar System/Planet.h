@@ -25,12 +25,12 @@ private:
 	sf::CircleShape createOrbit();
 	void checkOrbitIntersection(sf::FloatRect screenRect);
 	void checkLinesIntersection(sf::FloatRect screenRect);
-	void addLine();
+	void addLine(sf::Time dt);
 	void removeLines();
 public:
 	// Constructor
 	Planet(CelestialBody celestialBody, CelestialBody& orbitalTarget,
-		   float rotationSpeed, CelestialBody& linesTarget, bool addLines = false);
+		   CelestialBody& linesTarget, bool addLines = false);
 	// Public Methods
 	virtual void checkScreenRectIntersection(sf::FloatRect screenRect);
 	void update(sf::Time dt);

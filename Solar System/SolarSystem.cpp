@@ -20,15 +20,15 @@ void SolarSystem::setupSolarSystem(sf::Vector2f windowBounds)
 	addCelestialBody(std::move(Sun));
 
 	std::unique_ptr<Planet> Earth(new Planet(CelestialBody(25.f, sf::Color::Blue,
-		*mCelestialBodies.front() - 680.f), *mCelestialBodies.front(), 2.f, *mCelestialBodies.back()));
+		*mCelestialBodies.front() - 680.f), *mCelestialBodies.front(), *mCelestialBodies.back()));
 	addCelestialBody(std::move(Earth));
 
 	std::unique_ptr<Planet> Mercury(new Planet(CelestialBody(8.f, sf::Color::Green,
-		*mCelestialBodies.front() - 120.f), *mCelestialBodies.front(), 3.f, *mCelestialBodies.back()));
+		*mCelestialBodies.front() - 160.f), *mCelestialBodies.front(), *mCelestialBodies.back()));
 	addCelestialBody(std::move(Mercury));
 
 	std::unique_ptr<Planet> Uranus(new Planet(CelestialBody(20.f, sf::Color::Cyan,
-		*mCelestialBodies.front() - 880.f), *mCelestialBodies.front(), 3.25f, *mCelestialBodies[1], true));
+		*mCelestialBodies.front() - 880.f), *mCelestialBodies.front(), *mCelestialBodies[1]));
 	addCelestialBody(std::move(Uranus));
 }
 	// Add Celestial Body
@@ -52,7 +52,6 @@ void SolarSystem::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	sf::FloatRect screenRect(sf::Vector2f(mWindow.getView().getCenter().x - mWindow.getView().getSize().x / 2,
 										  mWindow.getView().getCenter().y - mWindow.getView().getSize().y / 2),
 										  mWindow.getView().getSize());
-
 	int drawables = 0;
 	for (const auto& body : mCelestialBodies) {
 		body->checkScreenRectIntersection(screenRect);
@@ -61,5 +60,5 @@ void SolarSystem::draw(sf::RenderTarget& target, sf::RenderStates states) const
 			if (ps->mOrbitVisible)
 				drawables++;
 	}
-	std::cout << "Drew " << drawables << std::endl;
+	//std::cout << "Drew " << drawables << std::endl;
 }

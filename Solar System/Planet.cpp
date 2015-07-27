@@ -7,12 +7,12 @@
 
 // Constructor
 Planet::Planet(CelestialBody celestialBody, CelestialBody& orbitalTarget,
-			   float rotationSpeed, CelestialBody& linesTarget, bool addLines)
+			   CelestialBody& linesTarget, bool addLines)
 	: CelestialBody(std::move(celestialBody))
 	, mOrbitalTarget(orbitalTarget)
 	, mOrbit(createOrbit())
 	, mOrbitVisible(true)
-	, mRotationSpeed(rotationSpeed)
+	, mRotationSpeed(350 / (mOrbit.getRadius() / 2))
 	, mLines()
 	, mLinesTarget(linesTarget)
 	, mAddLines(addLines)
@@ -38,21 +38,18 @@ sf::CircleShape Planet::createOrbit()
 	// Check Orbit Intersection
 void Planet::checkOrbitIntersection(sf::FloatRect screenRect)
 {
-	sf::Vector2f orbitalTargetCenter(mOrbitalTarget.mShape.getPosition().x + mOrbitalTarget.mShape.getRadius(),
-								     mOrbitalTarget.mShape.getPosition().y + mOrbitalTarget.mShape.getRadius());
-
-	sf::Vector2f distanceFromOrbit(orbitalTargetCenter.x - (mShape.getPosition().x + mShape.getRadius()),
-								   orbitalTargetCenter.y - (mShape.getPosition().x + mShape.getRadius()));
-	sf::Vector2f distanceFromScreen(orbitalTargetCenter.x - screenRect.left,
-									orbitalTargetCenter.y - screenRect.top);
-
-	float orbitDistance = sqrt(pow(distanceFromOrbit.x, 2) + pow(distanceFromOrbit.y, 2));
-	float screenDistance = sqrt(pow(distanceFromScreen.x, 2) + pow(distanceFromScreen.y, 2));
-
-	if (orbitDistance < screenDistance)
-		mOrbitVisible = true;
-	else
-		mOrbitVisible = false;
+	//for (int i = 0; i < mOrbit.getPointCount(); i++) {
+	//	sf::Vector2f point = mOrbit.getPoint(i);
+	//	if (point.x - mOrbit.getRadius() >= screenRect.left
+	//		&& point.x + mOrbit.getRadius() * 2 <= screenRect.width
+	//		&& point.y - mOrbit.getRadius() >= screenRect.top
+	//		&& point.y + mOrbit.getRadius() * 2 <= screenRect.height) {
+	//		mOrbitVisible = true;
+	//		break;
+	//	}
+	//	else
+	//		mOrbitVisible = false;
+	//}
 }
 	// Check Lines Intersection
 void Planet::checkLinesIntersection(sf::FloatRect screenRect)
@@ -64,24 +61,28 @@ void Planet::checkLinesIntersection(sf::FloatRect screenRect)
 			line.second = false;
 }
 	// Add Line
-void Planet::addLine()
+void Planet::addLine(sf::Time dt)
 {
-	auto distanceVec(sf::Vector2f((mShape.getPosition().x + mShape.getRadius()) 
-								   - (mLinesTarget.mShape.getPosition().x + mLinesTarget.mShape.getRadius()),
-								  (mShape.getPosition().y + mShape.getRadius()) 
-								   - (mLinesTarget.mShape.getPosition().y + mLinesTarget.mShape.getRadius())));
-	auto distance = sqrt(pow(distanceVec.x, 2) + pow(distanceVec.y, 2));
-	auto angle = atan2f(distanceVec.y, distanceVec.x) * 180 / 3.14159265359 + 90.f;
+	static sf::Time secondsPerLine = sf::seconds(0.012f);
+	if ((secondsPerLine -= dt) <= sf::seconds(0.f)) {
+		auto distanceVec(sf::Vector2f((mShape.getPosition().x + mShape.getRadius())
+			- (mLinesTarget.mShape.getPosition().x + mLinesTarget.mShape.getRadius()),
+			(mShape.getPosition().y + mShape.getRadius())
+			- (mLinesTarget.mShape.getPosition().y + mLinesTarget.mShape.getRadius())));
+		auto distance = sqrt(pow(distanceVec.x, 2) + pow(distanceVec.y, 2));
+		auto angle = atan2f(distanceVec.y, distanceVec.x) * 180 / 3.14159265359 + 90.f;
 
-	sf::RectangleShape line(sf::Vector2f(1.f, distance));
-	line.setPosition(mShape.getPosition().x + mShape.getRadius(), mShape.getPosition().y + mShape.getRadius());
-	line.setFillColor(sf::Color::White);
-	line.setRotation((float)angle);
+		sf::RectangleShape line(sf::Vector2f(1.f, distance));
+		line.setPosition(mShape.getPosition().x + mShape.getRadius(), mShape.getPosition().y + mShape.getRadius());
+		line.setFillColor(sf::Color::White);
+		line.setRotation((float)angle);
 
-	mLines.push_back(std::make_pair(line, true));
+		mLines.push_back(std::make_pair(line, true));
+		secondsPerLine = sf::seconds(0.012f);
+	}
 
-	if (mLines.size() > 1500)
-		mAddLines = false;
+	/*if (mLines.size() > 1500)
+		mAddLines = false;*/
 }
 	// Remove Lines
 void Planet::removeLines()
@@ -109,7 +110,7 @@ void Planet::update(sf::Time dt)
 	mShape.setPosition(rotation.transformPoint(mShape.getPosition()));
 
 	if (mAddLines)
-		addLine();
+		addLine(dt);
 	else if (!mLines.empty())
 		removeLines();
 }

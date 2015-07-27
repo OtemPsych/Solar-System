@@ -7,7 +7,7 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
-class SolarSystem :public sf::Drawable
+class SolarSystem :public sf::Drawable, private sf::NonCopyable
 {
 private:
 	// Private Data Members
