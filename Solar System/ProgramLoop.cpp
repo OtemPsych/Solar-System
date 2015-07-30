@@ -14,21 +14,20 @@ ProgramLoop::ProgramLoop()
 	std::vector<sf::VideoMode> VModes = sf::VideoMode::getFullscreenModes();
 
 	mWindow.create(VModes.front(), "Solar System", mStyleFlag, sf::ContextSettings(0, 0, 16));
+	//mWindow.setVerticalSyncEnabled(true);
 }
 
 // Private Methods
-#include <iostream>
 	// Handle View Movement
 void ProgramLoop::handleViewMovement()
 {
 	sf::View view = mWindow.getView();
-	sf::Mouse mouse;
 
 	static bool dragging = false;
 	static sf::Vector2i startPos(0, 0);
-	sf::Vector2i pos = mouse.getPosition();
+	sf::Vector2i pos = sf::Mouse::getPosition();
 
-	if (mouse.isButtonPressed(sf::Mouse::Button::Left)) {
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
 		if (!dragging)
 			startPos = pos;
 		dragging = true;
@@ -58,7 +57,11 @@ void ProgramLoop::processEvents()
 	sf::Event event;
 	while (mWindow.pollEvent(event))
 		switch (event.type)
-	{
+		{
+		case sf::Event::MouseButtonPressed:
+			if (event.mouseButton.button == sf::Mouse::Left)
+				mSolarSystem.handleCelestialConnecting(mWindow.mapPixelToCoords(sf::Mouse::getPosition()));
+			break;
 		case sf::Event::MouseWheelMoved:
 			handleZoom(event.mouseWheel.delta);
 			break;
@@ -68,7 +71,7 @@ void ProgramLoop::processEvents()
 			break;
 		case sf::Event::Closed:
 			mWindow.close();
-	}
+		}
 }
 	// Update
 void ProgramLoop::update(sf::Time dt)

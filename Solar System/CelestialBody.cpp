@@ -28,6 +28,14 @@ sf::Vector2f CelestialBody::operator-(float xPos)
 						mShape.getPosition().y + mShape.getRadius());
 	return relPos;
 }
+	// Operator=
+CelestialBody& CelestialBody::operator=(const CelestialBody& body)
+{
+	mShape = body.mShape;
+	mShapeVisible = body.mShapeVisible;
+
+	return *this;
+}
 	// Draw
 void CelestialBody::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {

@@ -12,6 +12,7 @@ class SolarSystem :public sf::Drawable, private sf::NonCopyable
 private:
 	// Private Data Members
 	std::vector<std::unique_ptr<CelestialBody>> mCelestialBodies;
+	short										mPlanetConnectorPos;
 	sf::RenderWindow&							mWindow;
 
 private:
@@ -22,6 +23,7 @@ public:
 	// Constructor
 	SolarSystem(sf::RenderWindow& window);
 	// Public Methods
+	void handleCelestialConnecting(sf::Vector2f mousePos);
 	void update(sf::Time dt);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
