@@ -33,7 +33,7 @@ void ConnectorLines::addLine()
 
 	mLines.push_back(std::make_pair(line, true));
 
-	if (mLines.size() > 1500)
+	if (mLines.size() > 3000)
 		mAddLines = false;
 }
 
@@ -44,6 +44,7 @@ void ConnectorLines::setLineTarget(CelestialBody* body)
 	static bool targetRotation = true;
 
 	if (targetRotation) {
+		mLines.clear();
 		if (Planet* target1 = dynamic_cast<Planet*>(&(*mConnectingTargets.first)))
 			target1->highlightOrbit(false);
 
@@ -81,7 +82,7 @@ void ConnectorLines::adjustLineAmount()
 	if (mAddLines)
 		addLine();
 	else if (!mLines.empty())
-		mLines.clear();
+		mLines.erase(mLines.begin());
 }
 	// Draw
 void ConnectorLines::draw(sf::RenderTarget& target, sf::RenderStates states) const
