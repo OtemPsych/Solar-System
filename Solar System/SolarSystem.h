@@ -11,21 +11,21 @@
 class SolarSystem :public sf::Drawable, private sf::NonCopyable
 {
 private:
-	// Private Data Members
+	// Private Data Member(s)
 	std::vector<std::unique_ptr<CelestialBody>> mCelestialBodies;
 	ConnectorLines								mConnectorLines;
 	sf::RenderWindow&							mWindow;
 
 private:
-	// Private Methods
+	// Private Method(s)
 	void setupSolarSystem(sf::Vector2f windowBounds);
 	void checkIntersections();
 	void addCelestialBody(std::unique_ptr<CelestialBody> celestialBody);
 	void setConnectingTarget(CelestialBody* body);
 public:
-	// Constructor
+	// Constructor(s)
 	SolarSystem(sf::RenderWindow& window);
-	// Public Methods
+	// Public Method(s)
 	void handleCelestialConnecting(sf::Vector2f mousePos);
 	void update(sf::Time dt);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;

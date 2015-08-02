@@ -21,6 +21,15 @@ void CelestialBody::checkScreenRectIntersection(sf::FloatRect screenRect)
 	else
 		mShapeVisible = false;
 }
+	// Check Mouse Intersection
+bool CelestialBody::checkMouseIntersection(sf::Vector2f mousePos)
+{
+	sf::FloatRect mouseBounds(mousePos, mousePos);
+	if (mShape.getGlobalBounds().intersects(mouseBounds))
+		return true;
+
+	return false;
+}
 	// Operator-
 sf::Vector2f CelestialBody::operator-(float xPos)
 {

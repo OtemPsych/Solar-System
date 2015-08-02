@@ -14,7 +14,7 @@ ProgramLoop::ProgramLoop()
 	std::vector<sf::VideoMode> VModes = sf::VideoMode::getFullscreenModes();
 
 	mWindow.create(VModes.front(), "Solar System", mStyleFlag, sf::ContextSettings(0, 0, 16));
-	//mWindow.setVerticalSyncEnabled(true);
+	mWindow.setVerticalSyncEnabled(true);
 }
 
 // Private Methods
@@ -27,7 +27,7 @@ void ProgramLoop::handleViewMovement()
 	static sf::Vector2i startPos(0, 0);
 	sf::Vector2i pos = sf::Mouse::getPosition();
 
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right)) {
 		if (!dragging)
 			startPos = pos;
 		dragging = true;

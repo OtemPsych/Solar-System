@@ -10,6 +10,12 @@ SolarSystem::SolarSystem(sf::RenderWindow& window)
 	, mWindow(window)
 {
 	setupSolarSystem(sf::Vector2f(window.getSize()));
+	
+	for (int i = 0; i < 50; i++) {
+		std::unique_ptr<Planet> newPlanet(new Planet(CelestialBody(25.f, sf::Color::Red,
+			*mCelestialBodies.back() - 50.f), *mCelestialBodies.front()));
+		addCelestialBody(std::move(newPlanet));
+	}
 }
 
 // Private Methods
@@ -25,7 +31,7 @@ void SolarSystem::setupSolarSystem(sf::Vector2f windowBounds)
 	addCelestialBody(std::move(Earth));
 
 	std::unique_ptr<Planet> Mercury(new Planet(CelestialBody(8.f, sf::Color::Green,
-		*mCelestialBodies.front() - 160.f), *mCelestialBodies.front()));
+		*mCelestialBodies.front() - 360.f), *mCelestialBodies.back()));
 	addCelestialBody(std::move(Mercury));
 
 	std::unique_ptr<Planet> Uranus(new Planet(CelestialBody(20.f, sf::Color::Cyan,
@@ -53,10 +59,9 @@ void SolarSystem::addCelestialBody(std::unique_ptr<CelestialBody> celestialBody)
 	// Handle Celestial Connecting
 void SolarSystem::handleCelestialConnecting(sf::Vector2f mousePos)
 {
-	for (size_t i = 0; i < mCelestialBodies.size(); i++)
-		if (Planet* ps = dynamic_cast<Planet*>(&(*mCelestialBodies[i])))
-			if (ps->checkMouseIntersection(mousePos))
-				mConnectorLines.setLineTarget(ps);
+	for (const auto& body : mCelestialBodies)
+		if (body->checkMouseIntersection(mousePos))
+			mConnectorLines.setLineTarget(&(*body));
 }
 	// Update
 void SolarSystem::update(sf::Time dt)

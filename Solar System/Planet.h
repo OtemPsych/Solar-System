@@ -17,7 +17,7 @@ public:
 	Planet(CelestialBody celestialBody, CelestialBody& orbitalTarget);
 	// Public Method(s)
 	virtual void checkScreenRectIntersection(sf::FloatRect screenRect);
-	bool checkMouseIntersection(sf::Vector2f mousePos);
+	void highlightOrbit(bool state);
 	void update(sf::Time dt);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };

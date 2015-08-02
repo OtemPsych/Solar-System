@@ -22,6 +22,7 @@ public:
 	virtual ~CelestialBody() {}
 	// Public Methods
 	virtual void checkScreenRectIntersection(sf::FloatRect screenRect);
+	bool checkMouseIntersection(sf::Vector2f mousePos);
 	sf::Vector2f operator-(float xPos);
 	CelestialBody& operator=(const CelestialBody& body);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;

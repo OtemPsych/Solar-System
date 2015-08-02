@@ -28,14 +28,6 @@ sf::CircleShape Orbit::createOrbit(sf::CircleShape& planet, sf::CircleShape& orb
 	return orbit;
 }
 // Public Method(s)
-	// Update
-void Orbit::update(sf::Time dt)
-{
-	sf::Vector2f orbitalCenter(mOrbitalTarget.getPosition().x + mOrbitalTarget.getRadius(),
-							   mOrbitalTarget.getPosition().y + mOrbitalTarget.getRadius());
-	mShape.setPosition((orbitalCenter.x - mShape.getRadius()),
-					   (orbitalCenter.y - mShape.getRadius()));
-}
 	// Check Intersection
 void Orbit::checkIntersection(sf::FloatRect screenRect)
 {
@@ -56,6 +48,14 @@ void Orbit::checkIntersection(sf::FloatRect screenRect)
 	//	else
 	//		mOrbitVisible = false;
 	//}
+}
+	// Update
+void Orbit::update(sf::Time dt)
+{
+	sf::Vector2f orbitalCenter(mOrbitalTarget.getPosition().x + mOrbitalTarget.getRadius(),
+		mOrbitalTarget.getPosition().y + mOrbitalTarget.getRadius());
+	mShape.setPosition((orbitalCenter.x - mShape.getRadius()),
+		(orbitalCenter.y - mShape.getRadius()));
 }
 	// Draw
 void Orbit::draw(sf::RenderTarget& target, sf::RenderStates states) const

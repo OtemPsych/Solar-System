@@ -9,7 +9,7 @@
 Planet::Planet(CelestialBody celestialBody, CelestialBody& orbitalTarget)
 	: CelestialBody(std::move(celestialBody))
 	, mOrbit(mShape, orbitalTarget.mShape)
-{	
+{
 }
 
 // Public Methods
@@ -20,14 +20,13 @@ void Planet::checkScreenRectIntersection(sf::FloatRect screenRect)
 
 	CelestialBody::checkScreenRectIntersection(screenRect);
 }
-	// Check Mouse Intersection
-bool Planet::checkMouseIntersection(sf::Vector2f mousePos)
+	// Highlight Orbit
+void Planet::highlightOrbit(bool state)
 {
-	sf::FloatRect mouseBounds(mousePos, mousePos);
-	if (mShape.getGlobalBounds().intersects(mouseBounds))
-		return true;
-
-	return false;
+	if (state)
+		mOrbit.getShape().setOutlineColor(sf::Color::Cyan);
+	else
+		mOrbit.getShape().setOutlineColor(sf::Color::White);
 }
 	// Update
 void Planet::update(sf::Time dt)

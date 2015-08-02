@@ -17,7 +17,6 @@ private:
 private:
 	// Private Method(s)
 	void addLine();
-	void removeLines();
 public:
 	// Constructor(s)
 	ConnectorLines(CelestialBody* target1 = nullptr, CelestialBody* target2 = nullptr);

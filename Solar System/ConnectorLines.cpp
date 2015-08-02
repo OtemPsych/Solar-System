@@ -1,7 +1,7 @@
 #include "ConnectorLines.h"
+#include "Planet.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
-#include <iostream>
 
 // Constructor(s)
 ConnectorLines::ConnectorLines(CelestialBody* target1, CelestialBody* target2)
@@ -36,21 +36,33 @@ void ConnectorLines::addLine()
 	if (mLines.size() > 1500)
 		mAddLines = false;
 }
-	// Remove Lines
-void ConnectorLines::removeLines()
-{
-	mLines.erase(mLines.begin());
-	if (mLines.empty())
-		mAddLines = true;
-}
+
 // Public Method(s)
 	// Set Line Target
 void ConnectorLines::setLineTarget(CelestialBody* body)
 {
-	if (mConnectingTargets.first == nullptr)
+	static bool targetRotation = true;
+
+	if (targetRotation) {
+		if (Planet* target1 = dynamic_cast<Planet*>(&(*mConnectingTargets.first)))
+			target1->highlightOrbit(false);
+
 		mConnectingTargets.first = body;
-	else if (mConnectingTargets.second == nullptr) {
+
+		if (Planet* target1 = dynamic_cast<Planet*>(&(*mConnectingTargets.first)))
+			target1->highlightOrbit(true);
+
+		if (Planet* target2 = dynamic_cast<Planet*>(&(*mConnectingTargets.second)))
+			target2->highlightOrbit(false);
+
+		targetRotation = false;
+		mAddLines = false;
+	}
+	else if (!targetRotation) {
 		mConnectingTargets.second = body;
+		if (Planet* target2 = dynamic_cast<Planet*>(&(*mConnectingTargets.second)))
+			target2->highlightOrbit(true);
+		targetRotation = true;
 		mAddLines = true;
 	}
 }
@@ -69,7 +81,7 @@ void ConnectorLines::adjustLineAmount()
 	if (mAddLines)
 		addLine();
 	else if (!mLines.empty())
-		removeLines();
+		mLines.clear();
 }
 	// Draw
 void ConnectorLines::draw(sf::RenderTarget& target, sf::RenderStates states) const

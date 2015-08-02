@@ -20,7 +20,7 @@ public:
 	Orbit(sf::CircleShape& planet, sf::CircleShape& orbitalTarget);
 	// Public Method(s)
 	void checkIntersection(sf::FloatRect screenRect);
-	sf::CircleShape getShape() const { return mShape; }
+	sf::CircleShape& getShape() { return mShape; }
 	void update(sf::Time dt);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
