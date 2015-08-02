@@ -1,6 +1,7 @@
 #include "ConnectorLines.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <iostream>
 
 // Constructor(s)
 ConnectorLines::ConnectorLines(CelestialBody* target1, CelestialBody* target2)
@@ -21,17 +22,16 @@ void ConnectorLines::addLine()
 	sf::Vector2f targetShapeCenter2(targetShape2.getPosition().x + targetShape2.getRadius(),
 								    targetShape2.getPosition().y + targetShape2.getRadius());
 
-	sf::Vector2f distanceVec(targetShapeCenter1 - targetShapeCenter2);
+	sf::Vector2f distanceVec(targetShapeCenter2 - targetShapeCenter1);
 	auto distance = sqrt(pow(distanceVec.x, 2) + pow(distanceVec.y, 2));
 	auto angle = atan2f(distanceVec.y, distanceVec.x) * 180 / 3.14159265359 + 90.f;
 
 	sf::RectangleShape line(sf::Vector2f(1.f, distance));
-	line.setPosition(targetShapeCenter1);
+	line.setPosition(targetShapeCenter2);
 	line.setFillColor(sf::Color::White);
 	line.setRotation((float)angle);
 
 	mLines.push_back(std::make_pair(line, true));
-
 
 	if (mLines.size() > 1500)
 		mAddLines = false;
@@ -45,12 +45,12 @@ void ConnectorLines::removeLines()
 }
 // Public Method(s)
 	// Set Line Target
-void ConnectorLines::setLineTarget(CelestialBody& body)
+void ConnectorLines::setLineTarget(CelestialBody* body)
 {
 	if (mConnectingTargets.first == nullptr)
-		mConnectingTargets.first = &body;
-	else {
-		mConnectingTargets.second = &body;
+		mConnectingTargets.first = body;
+	else if (mConnectingTargets.second == nullptr) {
+		mConnectingTargets.second = body;
 		mAddLines = true;
 	}
 }
@@ -74,7 +74,7 @@ void ConnectorLines::adjustLineAmount()
 	// Draw
 void ConnectorLines::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	for (const auto& line : mLines)
+	for (auto& line : mLines)
 		if (line.second)
 			target.draw(line.first, states);
 }

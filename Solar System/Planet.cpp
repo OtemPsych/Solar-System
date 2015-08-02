@@ -9,16 +9,10 @@
 Planet::Planet(CelestialBody celestialBody, CelestialBody& orbitalTarget)
 	: CelestialBody(std::move(celestialBody))
 	, mOrbit(mShape, orbitalTarget.mShape)
-	, mConnectorLines()
 {	
 }
 
 // Public Methods
-	// Set Connecting Target
-void Planet::setConnectingTarget(CelestialBody& body)
-{
-	mConnectorLines.setLineTarget(body);
-}
 	// Check Screen Rect Intersection
 void Planet::checkScreenRectIntersection(sf::FloatRect screenRect)
 {
@@ -54,6 +48,5 @@ void Planet::update(sf::Time dt)
 void Planet::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(mOrbit);
-	target.draw(mConnectorLines);
 	CelestialBody::draw(target, states);
 }

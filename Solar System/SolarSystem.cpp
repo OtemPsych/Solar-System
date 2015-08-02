@@ -6,7 +6,7 @@
 // Constructor
 SolarSystem::SolarSystem(sf::RenderWindow& window)
 	: mCelestialBodies()
-	, mPlanetConnectorPos(-1)
+	, mConnectorLines()
 	, mWindow(window)
 {
 	setupSolarSystem(sf::Vector2f(window.getSize()));
@@ -32,6 +32,17 @@ void SolarSystem::setupSolarSystem(sf::Vector2f windowBounds)
 		*mCelestialBodies.front() - 880.f), *mCelestialBodies.front()));
 	addCelestialBody(std::move(Uranus));
 }
+	// Check Intersections
+void SolarSystem::checkIntersections()
+{
+	sf::FloatRect screenRect(sf::Vector2f(mWindow.getView().getCenter().x - mWindow.getView().getSize().x / 2,
+										  mWindow.getView().getCenter().y - mWindow.getView().getSize().y / 2),
+										  mWindow.getView().getSize());
+
+	mConnectorLines.checkIntersection(screenRect);
+	for (const auto& body : mCelestialBodies)
+		body->checkScreenRectIntersection(screenRect);
+}
 	// Add Celestial Body
 void SolarSystem::addCelestialBody(std::unique_ptr<CelestialBody> celestialBody)
 {
@@ -39,13 +50,13 @@ void SolarSystem::addCelestialBody(std::unique_ptr<CelestialBody> celestialBody)
 }
 
 // Public Methods
-	// Handle Planet Connecting
+	// Handle Celestial Connecting
 void SolarSystem::handleCelestialConnecting(sf::Vector2f mousePos)
 {
 	for (size_t i = 0; i < mCelestialBodies.size(); i++)
 		if (Planet* ps = dynamic_cast<Planet*>(&(*mCelestialBodies[i])))
 			if (ps->checkMouseIntersection(mousePos))
-				ps->setConnectingTarget(*ps);
+				mConnectorLines.setLineTarget(ps);
 }
 	// Update
 void SolarSystem::update(sf::Time dt)
@@ -53,15 +64,14 @@ void SolarSystem::update(sf::Time dt)
 	for (auto& body : mCelestialBodies)
 		if (Planet* ps = dynamic_cast<Planet*>(&(*body)))
 			ps->update(dt);
+
+	checkIntersections();
+	mConnectorLines.adjustLineAmount();
 }
 	// Draw
 void SolarSystem::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	sf::FloatRect screenRect(sf::Vector2f(mWindow.getView().getCenter().x - mWindow.getView().getSize().x / 2,
-										  mWindow.getView().getCenter().y - mWindow.getView().getSize().y / 2),
-										  mWindow.getView().getSize());
-	for (const auto& body : mCelestialBodies) {
-		body->checkScreenRectIntersection(screenRect);
+	target.draw(mConnectorLines);
+	for (const auto& body : mCelestialBodies)
 		body->draw(target, states);
-	}
 }
