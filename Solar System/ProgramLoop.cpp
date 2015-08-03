@@ -36,7 +36,7 @@ void ProgramLoop::handleViewMovement()
 		dragging = false;
 
 	if (dragging)
-		view.move(-(float)((pos.x - startPos.x) / 100), -(float)((pos.y - startPos.y) / 100));
+		view.move(-(float)((pos.x - startPos.x) / 70), -(float)((pos.y - startPos.y) / 70));
 
 	mWindow.setView(view);
 }

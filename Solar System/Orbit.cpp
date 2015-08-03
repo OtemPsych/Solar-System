@@ -8,6 +8,7 @@ Orbit::Orbit(sf::CircleShape& planet, sf::CircleShape& orbitalTarget)
 	, mShapeVisible(true)
 	, mOrbitalTarget(orbitalTarget)
 {
+	mShape.setPointCount(120);
 }
 
 // Private Method(s)

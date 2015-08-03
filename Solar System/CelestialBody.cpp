@@ -24,8 +24,10 @@ void CelestialBody::checkScreenRectIntersection(sf::FloatRect screenRect)
 	// Check Mouse Intersection
 bool CelestialBody::checkMouseIntersection(sf::Vector2f mousePos)
 {
-	sf::FloatRect mouseBounds(mousePos, mousePos);
-	if (mShape.getGlobalBounds().intersects(mouseBounds))
+	if (mShape.getPosition().x < mousePos.x
+		&& mShape.getPosition().x + mShape.getRadius() * 2 > mousePos.x
+		&& mShape.getPosition().y < mousePos.y
+		&& mShape.getPosition().y + mShape.getRadius() * 2 > mousePos.y)
 		return true;
 
 	return false;

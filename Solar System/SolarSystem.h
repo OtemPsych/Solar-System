@@ -21,7 +21,7 @@ private:
 	void setupSolarSystem(sf::Vector2f windowBounds);
 	void checkIntersections();
 	void addCelestialBody(std::unique_ptr<CelestialBody> celestialBody);
-	void setConnectingTarget(CelestialBody* body);
+	sf::Color createRandomPlanetColor();
 public:
 	// Constructor(s)
 	SolarSystem(sf::RenderWindow& window);

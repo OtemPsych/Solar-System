@@ -12,7 +12,7 @@ SolarSystem::SolarSystem(sf::RenderWindow& window)
 	setupSolarSystem(sf::Vector2f(window.getSize()));
 	
 	for (int i = 0; i < 50; i++) {
-		std::unique_ptr<Planet> newPlanet(new Planet(CelestialBody(25.f, sf::Color::Red,
+		std::unique_ptr<Planet> newPlanet(new Planet(CelestialBody(25.f, createRandomPlanetColor(),
 			*mCelestialBodies.back() - 50.f), *mCelestialBodies.front()));
 		addCelestialBody(std::move(newPlanet));
 	}
@@ -26,15 +26,15 @@ void SolarSystem::setupSolarSystem(sf::Vector2f windowBounds)
 		sf::Vector2f(windowBounds.x / 2, windowBounds.y / 2)));
 	addCelestialBody(std::move(Sun));
 
-	std::unique_ptr<Planet> Earth(new Planet(CelestialBody(25.f, sf::Color::Blue,
+	std::unique_ptr<Planet> Earth(new Planet(CelestialBody(25.f, createRandomPlanetColor(),
 		*mCelestialBodies.front() - 680.f), *mCelestialBodies.front()));
 	addCelestialBody(std::move(Earth));
 
-	std::unique_ptr<Planet> Mercury(new Planet(CelestialBody(8.f, sf::Color::Green,
+	std::unique_ptr<Planet> Mercury(new Planet(CelestialBody(8.f, createRandomPlanetColor(),
 		*mCelestialBodies.front() - 360.f), *mCelestialBodies.back()));
 	addCelestialBody(std::move(Mercury));
 
-	std::unique_ptr<Planet> Uranus(new Planet(CelestialBody(20.f, sf::Color::Cyan,
+	std::unique_ptr<Planet> Uranus(new Planet(CelestialBody(20.f, createRandomPlanetColor(),
 		*mCelestialBodies.front() - 880.f), *mCelestialBodies.front()));
 	addCelestialBody(std::move(Uranus));
 }
@@ -53,6 +53,17 @@ void SolarSystem::checkIntersections()
 void SolarSystem::addCelestialBody(std::unique_ptr<CelestialBody> celestialBody)
 {
 	mCelestialBodies.push_back(std::move(celestialBody));
+}
+	// Create Random Planet Color
+sf::Color SolarSystem::createRandomPlanetColor()
+{
+	int max = 150,
+		min = 100;
+	int r = rand() % (max - min) + min,
+		g = rand() % (max - min) + min,
+		b = rand() % (max - min) + min;
+
+	return sf::Color(r, g, b);
 }
 
 // Public Methods
